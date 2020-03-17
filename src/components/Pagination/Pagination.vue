@@ -68,6 +68,7 @@
                 return this.$store.commit('setPageRange');
             },
             reversed(){
+                this.$store.commit('setMultipleProductSelector', false);
                 return this.$store.commit('resetPage');
             }
         },
