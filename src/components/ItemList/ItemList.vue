@@ -4,7 +4,7 @@
         <ul>
             <item v-for="(product, j) in $store.getters.productListScope"
                   :productData="product"
-                  :counter="j"
+                  :index="j"
                   :key="product.id">
             </item>
         </ul>
@@ -21,9 +21,6 @@
             'item': Item,
             'item-list-header': ItemListHeader,
         },
-        computed:{
-
-        }
     }
 </script>
 

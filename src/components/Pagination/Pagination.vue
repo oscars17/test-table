@@ -37,6 +37,9 @@
             sortColumn(){
                 return this.$store.state.sorting.sortColumn;
             },
+            reversed(){
+                return this.$store.state.products.reversed;
+            },
             selected:{
                 get(){
                     return this.$store.state.pagination.elementsPerPage.selectedValue + ' per page';
@@ -63,6 +66,9 @@
             page(){
                 return this.$store.commit('setPageRange');
             },
+            reversed(){
+                return this.$store.commit('resetPage');
+            }
         },
         name: "Pagination"
     }

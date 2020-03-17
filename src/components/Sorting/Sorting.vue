@@ -22,6 +22,18 @@
 <script>
     export default {
         name: "Sorting",
+        computed:{
+            sortColumn(){
+                return this.$store.state.sorting.sortColumn;
+            }
+        },
+        watch:{
+            sortColumn(data){
+                if (data.name === undefined){
+                    return this.$store.commit('orderProductList', 'id');
+                }
+            }
+        },
         methods:{
             setSortColumn(col){
                 const payload = {
@@ -33,7 +45,7 @@
             },
             formatName(col){
                 return col.name[0].toUpperCase() + col.name.slice(1) + ' ' + col.addition;
-            }
+            },
         },
     }
 </script>

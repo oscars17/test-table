@@ -7,7 +7,7 @@
             <button @click="hideModal" class="common-button">
                 Cancel
             </button>
-            <button @click="deleteProduct" class="selected-button">
+            <button @click.stop="deleteProduct" class="selected-button">
                 Confirm
             </button>
         </div>
@@ -22,8 +22,7 @@
                 this.$store.commit('hideDeleteModal');
             },
             async deleteProduct(){
-                const payload = [this.$store.state.modals.deleteProductIndex];
-                await this.$store.dispatch('deleteProducts', payload);
+                await this.$store.dispatch('deleteSingleProduct', this.$store.state.modals.deleteProductIndex);
                 return this.hideModal();
             }
         }

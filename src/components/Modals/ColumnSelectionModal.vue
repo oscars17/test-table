@@ -3,7 +3,7 @@
         <ul>
             <li class="flexbox-row check-wrap">
                 <div class="check-col">
-                    <label class="checkbox-container">
+                    <label class="checkbox-container" @click.prevent="setCheckAll">
                         <input type="checkbox" v-model="checkAll" />
                         <span class="checkmark check-col"></span>
                         <div :style="{'font-weight': 600 }" class="select-column-text">
@@ -14,7 +14,7 @@
             </li>
             <li v-for="el in $store.state.sorting.columnList" :key="el.name" class="flexbox-row check-wrap">
                 <div class="check-col">
-                    <label class="checkbox-container">
+                    <label class="checkbox-container" @click="checkAll = false">
                         <input type="checkbox" v-model="el.selected" />
                         <span class="checkmark check-col"></span>
                         <div class="select-column-text">
@@ -34,15 +34,14 @@
                 checkAll: true,
             }
         },
-        watch:{
-            checkAll(status){
-                return this.$store.commit('toggleAllColumns', status);
-            }
-        },
         name: "ColumnSelectionModal",
         methods:{
             formatName(col){
                 return col.name[0].toUpperCase() + col.name.slice(1) + ' ' + col.addition;
+            },
+            setCheckAll(){
+                this.checkAll = !this.checkAll;
+                return this.$store.commit('toggleAllColumns', this.checkAll);
             }
         }
     }

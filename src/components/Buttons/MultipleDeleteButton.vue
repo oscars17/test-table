@@ -10,8 +10,7 @@
         name: "MultipleDeleteButton",
         methods:{
             deleteMultipleProducts(){
-                const payload = this.$store.state.products.checkedProductList;
-                this.$store.dispatch('deleteProducts', payload);
+                this.$store.dispatch('deleteProducts');
             }
         },
         computed:{

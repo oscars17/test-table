@@ -1,3 +1,5 @@
+import store from '../index';
+
 const columnList = [
     {
         name: 'product',
@@ -46,6 +48,7 @@ const state = {
 
 const mutations = {
     setSortColumn(state, col) {
+        store.commit('setMultipleProductSelector', false);
         return state.sortColumn.name === col.name ? state.sortColumn = {} : state.sortColumn = col;
     },
     toggleAllColumns(state, status){

@@ -7,16 +7,17 @@ const state = {
     checkedProductList: [],
     loading: false,
     initLoading: true,
-    reversed: false,
     multipleProductSelector: false,
+    reversed: false,
 };
 
 const mutations = {
-    setMultipleProductSelector(state, payload){
-        return state.multipleProductSelector = payload;
+    setMultipleProductSelector(state, payload=undefined){
+        payload === undefined
+            ? state.multipleProductSelector = !state.multipleProductSelector
+            : state.multipleProductSelector = payload;
     },
     reverseProductList(state){
-        state.multipleProductSelector = false;
         state.reversed = !state.reversed;
         state.productList = state.productList.reverse();
     },
@@ -32,22 +33,33 @@ const mutations = {
         });
         state.reversed = false;
     },
+    setMultipleProductChecked(state, payload){
+        state.checkedProductList = payload;
+    },
     setProductChecked(state, payload){
-        if (payload.status){
-            return state.checkedProductList.push(payload.counter);
+        if (payload.status && state.checkedProductList.indexOf(payload.index) === -1){
+            return state.checkedProductList.push(payload.index);
         }
         else{
-            return state.checkedProductList.splice(state.checkedProductList.indexOf(payload.counter), 1);
+            return state.checkedProductList.splice(state.checkedProductList.indexOf(payload.index), 1);
         }
     },
-    deleteProducts(state, payload){
-        const pageEls = store.state.pagination.pageRange[0];
-        while (payload.length !== 0){
-            const index = payload.pop() + pageEls;
-            state.productList.splice(index, 1);
+    deleteProducts(state){
+        const pageRange = store.state.pagination.pageRange;
+        const slicedProducts = state.productList.slice(...pageRange);
+        let remainingProducts = [];
+        for (let i = 0; i < slicedProducts.length; i++){
+            if (state.checkedProductList.indexOf(i) === -1){
+                remainingProducts.push(slicedProducts[i]);
+            }
         }
-        state.multipleProductSelector = false;
+        return state.productList.splice(...pageRange, ...remainingProducts);
+
     },
+    deleteSingleProduct(state, index){
+        let elIndex = store.state.pagination.pageRange[0] + index;
+        state.productList.splice(elIndex, 1);
+    }
 };
 
 const getters = {
@@ -70,16 +82,25 @@ const actions = {
             return dispatch('getProductList');
         }
     },
-    async deleteProducts({dispatch, commit}, payload){
+    async deleteProductsRequest({dispatch}){
         state.loading = true;
         try{
             await deleteProducts();
-            commit('deleteProducts', payload);
             return state.loading = false;
         }
         catch (e) {
-            return dispatch('deleteProducts', payload);
+            return dispatch('deleteProductsRequest');
         }
+    },
+    async deleteProducts({dispatch, commit}){
+        await dispatch('deleteProductsRequest');
+        commit('deleteProducts');
+        commit('setMultipleProductSelector', false);
+    },
+    async deleteSingleProduct({dispatch, commit}, index){
+        await dispatch('deleteProductsRequest');
+        commit('deleteSingleProduct', index);
+        commit('setMultipleProductSelector', false);
     }
 };
 

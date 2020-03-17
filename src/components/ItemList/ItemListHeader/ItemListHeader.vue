@@ -1,7 +1,9 @@
 <template>
     <div class="flexbox-row item-list-header">
-        <label v-if="$store.getters.selectedColumnsWithoutSort.length !== 0" class="checkbox-container">
-            <input type="checkbox" v-model="$store.state.products.multipleProductSelector" />
+        <label v-if="$store.getters.selectedColumnsWithoutSort.length !== 0"
+               @click.prevent="selectMultipleProducts"
+               class="checkbox-container">
+            <input type="checkbox" v-model="multipleProductSelector" />
             <span class="checkmark"></span>
         </label>
         <div v-if="sortColumn.name" @click="reverseProductList" :class="sortColumn.name + '-col'"
@@ -23,6 +25,11 @@
 
 <script>
     export default {
+        data(){
+            return {
+                check: false,
+            }
+        },
         name: "ItemListHeader",
         computed:{
             sortColumn(){
@@ -30,6 +37,12 @@
             },
             selectedColumns(){
                 return this.$store.getters.selectedColumns;
+            },
+            checkedProductList(){
+                return this.$store.state.products.checkedProductList;
+            },
+            multipleProductSelector(){
+                return this.$store.state.products.multipleProductSelector;
             }
         },
         methods:{
@@ -38,6 +51,15 @@
             },
             formatName(col){
                 return col.name[0].toUpperCase() + col.name.slice(1) + ' ' + col.addition;
+            },
+            selectMultipleProducts(){
+                this.$store.commit('setMultipleProductSelector');
+                let payload = [];
+                if (this.multipleProductSelector){
+                    payload = Array.from(Array(this.$store.state.pagination.elementsPerPage.selectedValue).keys())
+
+                }
+                return this.$store.commit('setMultipleProductChecked', payload);
             }
         },
         watch:{
@@ -51,7 +73,8 @@
                     return this.$store.commit('setSortColumn', this.sortColumn);
                 },
                 deep: true
-            }
+            },
+
         },
     }
 </script>

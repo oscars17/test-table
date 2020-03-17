@@ -1,7 +1,7 @@
 <template>
-    <li class="flexbox-row product" :style="{'background-color': counter % 2 ? '#f8f9fa' : 'white'}"
-        @mouseenter='deleteButton=true' @mouseleave="deleteButton=false" @click="checked = !checked">
-        <label v-if="noCols === false" class="checkbox-container">
+    <li class="flexbox-row product" :style="{'background-color': index % 2 ? '#f8f9fa' : 'white'}"
+        @mouseenter='deleteButton=true' @mouseleave="deleteButton=false" @click="setCheck">
+        <label v-if="noCols === false" class="checkbox-container" @click.prevent.stop="setCheck">
             <input type="checkbox" v-model="checked" />
             <span class="checkmark"></span>
         </label>
@@ -15,11 +15,11 @@
         </div>
         <div class="spacer"></div>
         <div v-if="noCols === false && deleteButton" :style="{'padding-right': '32px'}">
-            <delete-button :index="counter" />
+            <delete-button :index="index" />
         </div>
         <delete-product-modal
                 @remove-can="deleteButton=false"
-                v-if="$store.state.modals.deleteModal && counter === $store.state.modals.deleteProductIndex" />
+                v-if="$store.state.modals.deleteModal && index === $store.state.modals.deleteProductIndex" />
     </li>
 </template>
 
@@ -30,19 +30,18 @@
     export default {
         data(){
             return {
-                checked: false,
                 deleteButton: false,
             }
         },
         name: "Item",
-        props: ['productData', 'counter'],
+        props: ['productData', 'index'],
         components:{
             'delete-button': DeleteButton,
             'delete-product-modal': DeleteProductModal,
         },
         created(){
             const payload = {
-                counter: this.counter,
+                index: this.index,
                 status: false,
             };
             this.$store.commit('setProductChecked', payload);
@@ -51,23 +50,19 @@
             noCols(){
                 return this.$store.getters.selectedColumnsWithoutSort.length === 0;
             },
-            multipleProductSelector(){
-                return this.$store.state.products.multipleProductSelector;
+            checked(){
+                return this.$store.state.products.checkedProductList.indexOf(this.index) !== -1;
             }
         },
-        watch:{
-            multipleProductSelector(status){
-                this.checked = status;
-            },
-            checked(status){
+        methods:{
+            setCheck(){
                 const payload = {
-                    counter: this.counter,
-                    status: status,
+                    index: this.index,
+                    status: !this.checked,
                 };
                 this.$store.commit('setProductChecked', payload);
-            },
-        },
-        methods:{
+                this.$store.commit('setMultipleProductSelector', false);
+            }
         }
     }
 </script>
