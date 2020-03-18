@@ -79,7 +79,8 @@ const actions = {
             state.initLoading = false;
         }
         catch(e){
-            return dispatch('getProductList');
+            const actionName = 'getProductList';
+            return dispatch('handleProductsErrors', actionName);
         }
     },
     async deleteProductsRequest({dispatch}){
@@ -89,7 +90,8 @@ const actions = {
             return state.loading = false;
         }
         catch (e) {
-            return dispatch('deleteProductsRequest');
+            const actionName = 'deleteProductsRequest';
+            return dispatch('handleProductsErrors', actionName);
         }
     },
     async deleteProducts({dispatch, commit}){
@@ -101,7 +103,10 @@ const actions = {
         await dispatch('deleteProductsRequest');
         commit('deleteSingleProduct', index);
         commit('setMultipleProductSelector', false);
-    }
+    },
+    async handleProductsErrors({dispatch}, actionName){
+        return dispatch(actionName);
+    },
 };
 
 

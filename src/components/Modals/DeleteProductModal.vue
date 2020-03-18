@@ -14,15 +14,20 @@
     </div>
 </template>
 <script>
+    import { mapActions } from 'vuex';
+
     export default {
         name: "DeleteProductModal",
         methods:{
+            ...mapActions([
+                'deleteSingleProduct'
+            ]),
             hideModal(){
                 this.$emit('remove-can');
                 this.$store.commit('hideDeleteModal');
             },
             async deleteProduct(){
-                await this.$store.dispatch('deleteSingleProduct', this.$store.state.modals.deleteProductIndex);
+                await this.deleteSingleProduct(this.$store.state.modals.deleteProductIndex);
                 return this.hideModal();
             }
         }

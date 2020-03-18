@@ -31,6 +31,7 @@
     import ColumnSelectionButton from "./Buttons/ColumnSelectionButton";
     import MultipleDeleteButton from "./Buttons/MultipleDeleteButton";
     import Loading from "./Animations/Loading";
+    import { mapActions } from 'vuex';
 
     export default {
         components:{
@@ -42,12 +43,12 @@
             'loading': Loading,
         },
         async created(){
-            await this.fetchInitialData();
+            await this.getProductList();
         },
         methods:{
-            async fetchInitialData(){
-                return this.$store.dispatch('getProductList');
-            }
+            ...mapActions([
+                'getProductList'
+            ]),
         },
     }
 </script>

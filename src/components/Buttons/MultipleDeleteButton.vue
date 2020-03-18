@@ -6,11 +6,16 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex';
+
     export default {
         name: "MultipleDeleteButton",
         methods:{
+            ...mapActions([
+                'deleteProducts',
+            ]),
             deleteMultipleProducts(){
-                this.$store.dispatch('deleteProducts');
+                this.deleteProducts();
             }
         },
         computed:{
